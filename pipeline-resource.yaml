@@ -6,7 +6,7 @@ metadata:
 spec:
   type: git
   params:
-    - name: revision
-      value: main
-    - name: url
-      value: https://github.com/cynogen127/node-s.git
+  - name: revision
+    value: main
+  - name: url
+    value: https://github.com/cynogen127/nodejs-app.git
