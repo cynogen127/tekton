@@ -1,6 +1,5 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
-
 metadata:
   name: nodejs-pipeline
   namespace: tekton-pipelines
