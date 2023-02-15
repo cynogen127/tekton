@@ -3,7 +3,7 @@ kind: Pipeline
 
 metadata:
   name: nodejs-pipeline
-  namespace: bjex
+  namespace: tekton-pipelines
 spec:
   params:
   - name: IMAGE

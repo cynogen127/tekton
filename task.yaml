@@ -1,44 +1,41 @@
 apiVersion: tekton.dev/v1beta1
-
 kind: Task
-
 metadata:
-
- name: git-clone
+  name: gitclone
 spec:
- workspaces:
-   - name: output
-     description: The git repo will be cloned onto the volume backing this Workspace.
- params:
-   - name: 
-     description: Repository URL to clone from.
-     type: string
-   - name: revision
-     description: Revision to checkout. (branch, tag, sha, ref, etc...)
-     type: string
-     default: ""
- steps:
-   - name: clone
-     image: "hub.docker.com/mynode-app:latest"
-     env:
-       - name: PARAM_URL
-         value: $(params.url)
-       - name: PARAM_REVISION
-         value: $(params.revision)
-       - name: WORKSPACE_OUTPUT_PATH
-         value: $(workspaces.output.path)
-     script: |
-       #!/usr/bin/env sh
-       set -eu
-       CHECKOUT_DIR="${WORKSPACE_OUTPUT_PATH}"
-       /ko-app/git-init \
-         -url="${PARAM_URL}" \
-         -revision="${PARAM_REVISION}" \
-         -path="${CHECKOUT_DIR}"
-       cd "${CHECKOUT_DIR}"
-       EXIT_CODE="$?"
-       if [ "${EXIT_CODE}" != 0 ] ; then
-         exit "${EXIT_CODE}"
-       fi
-       # Verify clone is success by reading readme file.
-       cat ${CHECKOUT_DIR}/README.md
+  workspaces:
+  - name: output
+    description: The git repo will be cloned onto the volume backing this Workspace.
+  params:
+  - name: repo-url
+    description: Repository URL to clone from.
+    type: string
+  - name: revision
+    description: Revision to checkout. (branch, tag, sha, ref, etc...)
+    type: string
+    default: ""
+  steps:
+  - name: clone
+    image: "hub.docker.com/mynode-app:latest"
+    env:
+    - name: PARAM_URL
+      value: $(params.repo-url)
+    - name: PARAM_REVISION
+      value: $(params.revision)
+    - name: WORKSPACE_OUTPUT_PATH
+      value: $(workspaces.output.path)
+    script: |
+      #!/usr/bin/env sh
+      set -eu
+      CHECKOUT_DIR="${WORKSPACE_OUTPUT_PATH}"
+      /ko-app/git-init \
+        -url="${PARAM_URL}" \
+        -revision="${PARAM_REVISION}" \
+        -path="${CHECKOUT_DIR}"
+      cd "${CHECKOUT_DIR}"
+      EXIT_CODE="$?"
+      if [ "${EXIT_CODE}" != 0 ] ; then
+        exit "${EXIT_CODE}"
+      fi
+      # Verify clone is success by reading readme file.
+      cat "${CHECKOUT_DIR}/README.md"
